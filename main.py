@@ -1,9 +1,34 @@
 import	argparse
+from pathlib import Path
+
+def	extIsJpeg(file):
+	return	file.name.endswith('jpg') or file.name.endswith('jpeg')
+
+# return:
+#	-1: not a jpeg file
+#	-2: no exif
+#	-3: no XMD
+#	-4: no movie data
+def	processFile(file):
+	print("processFile: {}".format(file.name))
+
+def	processDirectory(p):
+	# print("processDir: {}".format(p.name))
+	[processFile(file) for file in list(p.glob('*')) if file.is_file() and extIsJpeg(file)]
+	[processDirectory(dir) for dir in p.iterdir() if dir.is_dir()]
 
 def	main(recursive, path):
 	print("main: {}, {}".format(recursive, path))
 	if path==None:
 		path = "."
+
+	p = Path(path)
+	if p.is_file():
+		processFile(p)
+	elif recursive==True:
+		processDirectory(p)
+	else:
+		[processFile(file) for file in list(p.glob('*')) if file.is_file() and extIsJpeg(file)]
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
