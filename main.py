@@ -11,6 +11,13 @@ def	extIsJpeg(file):
 #	-4: no movie data
 def	processFile(file):
 	print("processFile: {}".format(file.name))
+	# 1. check jpeg(SOI)
+
+	# 2. check exif
+
+	# 3. find XMP
+
+	# 4. save files
 
 def	processDirectory(p):
 	# print("processDir: {}".format(p.name))
