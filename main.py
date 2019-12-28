@@ -40,7 +40,7 @@ def	main(recursive, path):
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-r", "--recursive", help="search jpeg file recursively", action="store_true")
-	parser.add_argument("-p", "--path", help="jpeg file search path")
+	parser.add_argument("-t", "--target", help="jpeg file search path")
 
 	args = parser.parse_args()
 
