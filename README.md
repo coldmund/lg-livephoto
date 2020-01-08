@@ -10,3 +10,7 @@
 * -h: show help
 * -r: find jpeg files recursively
 * -t: target path or file
+
+## comment
+* output files(jpeg file without video data and mp4 file) are created in 'output' directory. if you set '-r' option, 'output' directory will be created at each source directory.
+* extention must be 'jpg' or 'JPG'.

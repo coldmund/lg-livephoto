@@ -1,9 +1,10 @@
 import argparse
 from pathlib import Path
 import xml.etree.ElementTree as ET
+import os
 
 def	extIsJpeg(file):
-	return	file.name.endswith('jpg') or file.name.endswith('jpeg')
+	return	file.name.lower().endswith('.jpg')
 
 def	read2Bytes(file):
 	data = file.read(2)
@@ -48,7 +49,7 @@ def	processFile(file):
 					# print('	not ascii text')
 					pass
 		except EOFError:
-			print('EOF')
+			print('	EOF')
 			return	-2
 
 		# 4. parse xmp
@@ -62,16 +63,28 @@ def	processFile(file):
 		# print('xmp: ', ET.tostring(xmp))
 		version = xmp.find('rdf:RDF/rdf:Description/LGLivePic:Version', namespaces=nmspdict)
 		mime = xmp.find('rdf:RDF/rdf:Description/LGBehindVideo:Mime', namespaces=nmspdict)
-		nOffset = xmp.find('rdf:RDF/rdf:Description/LGBehindVideo:NegativeOffset', namespaces=nmspdict)
-		size = xmp.find('rdf:RDF/rdf:Description/LGBehindVideo:Size', namespaces=nmspdict)
-		if version is None or mime is None or nOffset is None or size is None:
-			print('xmp error')
+		negOffset = xmp.find('rdf:RDF/rdf:Description/LGBehindVideo:NegativeOffset', namespaces=nmspdict)
+		videoSize = xmp.find('rdf:RDF/rdf:Description/LGBehindVideo:Size', namespaces=nmspdict)
+		if version is None or mime is None or negOffset is None or videoSize is None:
+			print('	not my format')
 			return	-3
-		nOffset = int(nOffset.text)
-		size = int(size.text)
-		# print('nOffset: {}, size: {}'.format(nOffset, size))
+		negOffset = int(negOffset.text)
+		videoSize = int(videoSize.text)
+		# print('negOffset: {}, videoSize: {}'.format(negOffset, videoSize))
 
 		# 5. save files
+		# print('dir: {}, name: {}'.format(file.parents[0], file.name))
+		targetDir = file.parents[0].joinpath('output')
+		movieFileName = file.name[: file.name.rfind('.')] + '.mp4'
+		if not targetDir.exists():
+			targetDir.mkdir()
+		fileSize = os.path.getsize(file)
+		f.seek(0)
+		with open(targetDir.joinpath(file.name), 'wb') as jpegFile:
+			jpegFile.write(f.read(fileSize - negOffset))
+		f.seek(fileSize - negOffset)
+		with open(targetDir.joinpath(movieFileName), 'wb') as movieFile:
+			movieFile.write(f.read(videoSize))
 
 		return	0
 
