@@ -91,7 +91,7 @@ def	processFile(file):
 def	processDirectory(p):
 	# print("processDir: {}".format(p.name))
 	[processFile(file) for file in list(p.glob('*')) if file.is_file() and extIsJpeg(file)]
-	[processDirectory(dir) for dir in p.iterdir() if dir.is_dir()]
+	[processDirectory(dir) for dir in p.iterdir() if (dir.is_dir() and dir.name != 'output')]
 
 def	main(recursive, target):
 	print("main: {}, {}".format(recursive, target))
